@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 import copy
 from base64 import standard_b64encode
 

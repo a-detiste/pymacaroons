@@ -1,7 +1,6 @@
-from __future__ import unicode_literals
 import json
+from unittest.mock import *
 
-from mock import *
 import pytest
 
 from nacl.bindings import crypto_box_NONCEBYTES
@@ -11,7 +10,7 @@ from pymacaroons.exceptions import *
 from pymacaroons.utils import *
 
 
-class TestMacaroon(object):
+class TestMacaroon:
 
     def setup(self):
         pass

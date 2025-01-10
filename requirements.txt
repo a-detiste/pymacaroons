@@ -5,7 +5,6 @@
 pytest
 pytest-coverage
 coverage
-mock>=2.0.0,<2.99
 sphinx>=1.2.3
 python-coveralls>=2.4.2
 hypothesis==1.11.4

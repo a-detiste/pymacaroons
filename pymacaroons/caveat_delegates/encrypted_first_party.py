@@ -1,7 +1,5 @@
-from __future__ import unicode_literals
 import binascii
 
-from six import iteritems
 from pymacaroons.field_encryptors import SecretBoxEncryptor
 
 from .first_party import (
@@ -46,7 +44,7 @@ class EncryptedFirstPartyCaveatVerifierDelegate(
     def verify_first_party_caveat(self, verifier, caveat, signature):
         predicate = caveat.caveat_id_bytes
 
-        for signifier, encryptor in iteritems(self.field_encryptors):
+        for signifier, encryptor in self.field_encryptors.items():
             if predicate.startswith(signifier):
                 predicate = encryptor.decrypt(
                     signature,

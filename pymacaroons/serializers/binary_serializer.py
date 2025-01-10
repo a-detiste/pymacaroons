@@ -1,10 +1,6 @@
-from __future__ import unicode_literals
-
 import binascii
 from collections import namedtuple
-import six
 import struct
-import sys
 from base64 import urlsafe_b64encode
 
 from pymacaroons.utils import (
@@ -93,7 +89,7 @@ class BinarySerializer(BaseSerializer):
         from pymacaroons.macaroon import MACAROON_V2
         from pymacaroons.exceptions import MacaroonDeserializationException
 
-        first = six.byte2int(serialized[:1])
+        first = serialized[0]
         if first == MACAROON_V2:
             return self._deserialize_v2(serialized)
         if _is_ascii_hex(first):
@@ -311,41 +307,21 @@ def _encode_uvarint(data, n):
         data.append(this_byte | 0x80)
 
 
-if sys.version_info.major == 2:
-    def _decode_uvarint(data):
-        ''' Decode a variable -length integer.
-
-        Reads a sequence of unsigned integer byte and decodes them into an
-        integer in variable-length format and returns it and the length read.
-        '''
-        n = 0
-        shift = 0
-        i = 0
-        for b in data:
-            b = ord(b)
-            i += 1
-            if b < 0x80:
-                return n | b << shift, i
-            n |= (b & 0x7f) << shift
-            shift += 7
-        raise Exception('cannot read uvarint from buffer')
-else:
-    def _decode_uvarint(data):
-        ''' Decode a variable -length integer.
-
-        Reads a sequence of unsigned integer byte and decodes them into an
-        integer in variable-length format and returns it and the length read.
-        '''
-        n = 0
-        shift = 0
-        i = 0
-        for b in data:
-            i += 1
-            if b < 0x80:
-                return n | b << shift, i
-            n |= (b & 0x7f) << shift
-            shift += 7
-        raise Exception('cannot read uvarint from buffer')
+def _decode_uvarint(data):
+    ''' Decode a variable -length integer.
+    Reads a sequence of unsigned integer byte and decodes them into an
+    integer in variable-length format and returns it and the length read.
+    '''
+    n = 0
+    shift = 0
+    i = 0
+    for b in data:
+        i += 1
+        if b < 0x80:
+            return n | b << shift, i
+        n |= (b & 0x7f) << shift
+        shift += 7
+    raise Exception('cannot read uvarint from buffer')
 
 
 def _is_ascii_hex(b):
